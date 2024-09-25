@@ -1,6 +1,6 @@
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth'
-import { useReducer, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useReducer } from 'react'
+import {  useNavigate } from 'react-router-dom'
 import { FirebaseError } from 'firebase/app'
 
 import { auth } from '../../routes/firebase'
@@ -75,17 +75,7 @@ margin-top:40px;
 color: tomato;
 font-weight:600;
 `
- const Switcher =styled.div`
-margin-top: 20px;
-display: flex;
-flex-direction: column;
-align-items: center;
-color:#1B90EC;
-gap: 15px;
-& a{
-    color:#3675AE;
-}
-`
+
 
 
 
@@ -198,10 +188,6 @@ export default function SignupModal({onClose}){
                 {/* <GithubButton></GithubButton>
                 <GoogleButton></GoogleButton> */}
 
-                {/* <Switcher>
-                    <Link to="/login">Do you have an Account?</Link>
-                    <Link  to="/resetpassword">Forgot your password?</Link>
-                </Switcher> */}
 
             </Wrapper2>
      
