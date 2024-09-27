@@ -1,15 +1,18 @@
 
-import { addDoc, collection, updateDoc } from "firebase/firestore"; 
+import { addDoc, collection, doc, updateDoc } from "firebase/firestore"; 
 import { useState } from 'react';
 import { auth,db, storage} from '../routes/firebase';
-import { Form, TextArea,Wrapper,FileCondition,TextInputLabel,InputItem ,TextInput,SubmitBtn  } from "./styled-components/post-tweet-styled-components";
+import { Form,Wrapper,FileCondition,TextInputLabel,InputItem ,TextInput,SubmitBtn  } from "./styled-components/post-tweet-styled-components";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import styled from "styled-components";
 
 const Outter= styled.div`
       display: grid;
       grid-template-columns: 1fr 8fr;
-      width: 100%;
+      padding: 20px;
+        border: 2px solid rgba(255,255,255,0.5);
+        border-radius:5px;
+        width: 95%;
 `
 const Avatar =styled.div`
 width: 45px;
@@ -21,9 +24,21 @@ const AvatarImg =styled.img`
 width: 100%;
 height: 100%;
 `
+const TextArea= styled.textarea`
+    width: 100%;
+    height: 50px;
+    background-color: transparent;
+    color: white;
+    border: none;
+    outline: none;
+    font-size: 20px;
+    border-bottom: 1px solid white;
+    resize: none;
+`
 
-export  default function PostTweetForm({status}){
+export  default function PostRetweetForm({status,docId}){
     const user= auth.currentUser;
+    
     const [post,setPost]= useState<{
     isLoading: boolean,
     tweet: string,
@@ -70,7 +85,7 @@ export  default function PostTweetForm({status}){
                 }
             })
             if(confirm('you really post?')){
-                const doc= await addDoc(collection(db,"tweets"),{
+                const docs= await addDoc(collection(doc(db,'tweets',docId),"retweets"),{
                     tweet: post.tweet,
                     createdAt:  Date.now(),
                     userName :  user.displayName || 'Anonymous',
@@ -81,11 +96,11 @@ export  default function PostTweetForm({status}){
                 
                 
                 if(post.file){
-                    const locationRef= ref(storage,`tweets/${user.uid}/${doc.id}`);
+                    const locationRef= ref(storage,`tweets/retweets/${user.uid}/${docs.id}`);
                    const uploadResult= await uploadBytes(locationRef,post.file);
                   const url= await getDownloadURL(uploadResult.ref);
                   await updateDoc(
-                    doc,{photo:url});
+                    docs,{photo:url});
                 }
             }
 

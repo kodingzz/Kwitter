@@ -21,6 +21,7 @@ export interface ITweets {
     userName:string;
     profileImg?:string;
     like: [];
+    tweetDocId?:string;
 }
 
 export default function TimeLine(){

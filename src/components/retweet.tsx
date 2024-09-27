@@ -1,7 +1,7 @@
 
 import { ITweets } from "./timeline";
 import { auth, db, storage } from "../routes/firebase";
-import { deleteDoc, deleteField, doc, updateDoc } from "firebase/firestore";
+import { collection, deleteDoc, deleteField, doc, updateDoc } from "firebase/firestore";
 import { deleteObject, getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { useEffect, useState } from "react";
 import { Wrapper, Column,Row,UserName,UploadedDate,Payload,Photo,Div,DeleteBtn,EditBtn,EditTextArea,EditTextLabel,EditTextInput,CancelBtn,UpdateBtn,InputItem,Wrapper2,DeleteImg, Wrapper3, ReplyContainer, Like, Reply, Bookmark, Share, NonLike} from "./styled-components/tweet-styled-components";
@@ -10,7 +10,7 @@ import styled from 'styled-components';
 import ReplyModal from "./modal/ReplyModal";
 import { createPortal } from "react-dom";
 import {  useNavigate } from "react-router-dom";
-import RetweetPage from "./retweetPage";
+import { IRetweets } from "./retweetPage";
 
 const Avatar =styled.div`
 width: 40px;
@@ -29,13 +29,12 @@ const TextAndPhoto =styled.div`
 `
 
 
-export default function Tweet({userName,tweet,photo,createdAt,userId,docId,profileImg,like}:ITweets){
+export default function Retweet({userName,tweet,photo,createdAt,userId,docId,profileImg,like,tweetDocId}:ITweets){
     const user= auth.currentUser;
 
     
     const [likeClicked,setLikeClicked]= useState(like.filter(item=>item===user?.uid).length===0 ? false: true);
     const [replyClicked,setReplyClicked] =useState(false);
-    const [retweetClicked,setRetweetClicked] =useState(false);
     const updatedDate = new Date(createdAt).toLocaleDateString('en-US', {
             year:'numeric',
             month:'short',
@@ -45,13 +44,13 @@ export default function Tweet({userName,tweet,photo,createdAt,userId,docId,profi
 
     const navigate =useNavigate();
      //  프로파일에서 아바타 이미지를 변경했을때 tweet에 나타나는 프로파일 이미지 업데이트
-    async function  updateUserInfo() {
-        if (user?.uid === userId) {
-            const docRef = doc(db, "tweets", docId);
-            await updateDoc(docRef,{ profileImg: profileImg, userName: user.displayName });
-        }
-    }
-    useEffect(()=>{updateUserInfo()},[]);   
+    // async function  updateUserInfo() {
+    //     if (user?.uid === userId) {
+    //         const docRef = doc(db, "tweets", docId);
+    //         await updateDoc(docRef,{ profileImg: profileImg, userName: user.displayName });
+    //     }
+    // }
+    // useEffect(()=>{updateUserInfo()},[]);   
    
 
     const [edit,setEdit]= useState<{
@@ -91,11 +90,11 @@ export default function Tweet({userName,tweet,photo,createdAt,userId,docId,profi
     
         async function handleDeleteBtn(){
             try{
-                if(confirm('you really delete this tweet?')){
-                    await deleteDoc(doc(db,"tweets",docId));
+                if(confirm('you really delete this retweet?')){
+                    await deleteDoc(doc(db,"tweets",tweetDocId,'retweets',docId));
                     if(photo){
-                        const photoRef =ref(storage,`tweets/${userId}/${docId}`);
-                        await deleteObject(photoRef);
+                        const photoRef =ref(storage,`tweets/retweets/${userId}/${docId}`);
+                        await deleteObject(photoRef);   
                     }
              }
             }
@@ -131,13 +130,13 @@ export default function Tweet({userName,tweet,photo,createdAt,userId,docId,profi
                             isLoading:true,
                         }
                     })  
-                    await updateDoc(doc(db,"tweets",docId),{tweet: edit.tweet});
+                    await updateDoc(doc(db, 'tweets', tweetDocId, 'retweets', docId),{tweet: edit.tweet});
 
                     if(edit.file){
-                        const locationRef= ref(storage,`tweets/${userId}/${docId}`);
+                        const locationRef= ref(storage,`tweets/retweets/${userId}/${docId}`);
                        const uploadResult= await uploadBytes(locationRef,edit.file);
                       const url= await getDownloadURL(uploadResult.ref);
-                      await updateDoc(doc(db,"tweets",docId),{ photo:url});
+                      await updateDoc(doc(db, 'tweets', `${tweetDocId}`, 'retweets', `${docId}`),{ photo:url});
                     }
                 }
                
@@ -161,9 +160,9 @@ export default function Tweet({userName,tweet,photo,createdAt,userId,docId,profi
             if (user?.uid !== userId) return;
             try{
                 if(photo){
-                    const photoRef =ref(storage,`tweets/${userId}/${docId}`);
+                    const photoRef =ref(storage,`tweets/retweets/${userId}/${docId}`);
                     await deleteObject(photoRef);
-                    await updateDoc(doc(db, 'tweets', docId), {
+                    await updateDoc(doc(db, 'tweets', `${tweetDocId}`, 'retweets', `${docId}`), {
                         photo: deleteField(),
                       });
                 }
@@ -175,7 +174,8 @@ export default function Tweet({userName,tweet,photo,createdAt,userId,docId,profi
         }
        
         async function handleLikePlus(){
-           const docRef = doc(db, "tweets", docId);
+           const docRef = doc(db, 'tweets', `${tweetDocId}`, 'retweets', `${docId}`)
+           
            if(user){
             await updateDoc(docRef,{ like: [...like,user.uid]});
             setLikeClicked(prev=>!prev);
@@ -183,7 +183,7 @@ export default function Tweet({userName,tweet,photo,createdAt,userId,docId,profi
           
         }
         async function handleLikeMinus(){
-            const docRef = doc(db, "tweets", docId);
+            const docRef = doc(db, 'tweets', `${tweetDocId}`, 'retweets', `${docId}`)
             if(user){
             await updateDoc(docRef,{ like: [...like].filter(item=>item!==user.uid)});
             setLikeClicked(prev=>!prev);
@@ -198,7 +198,7 @@ export default function Tweet({userName,tweet,photo,createdAt,userId,docId,profi
             setReplyClicked(false);
         }
         function handleGoRetweet(){
-            navigate(`/retweet/${docId}`);
+            // navigate(`/retweet/${docId}`);
         }
 
         return  <Wrapper >

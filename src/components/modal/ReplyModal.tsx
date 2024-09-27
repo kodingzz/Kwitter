@@ -58,7 +58,9 @@ const Inner1= styled.div`
     margin-top:40px;
 `
 const Avatar =styled.div`
-
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
 `
 const AvatarImg= styled.img`
     width: 40px;
