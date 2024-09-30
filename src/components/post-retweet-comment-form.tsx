@@ -36,7 +36,7 @@ const TextArea= styled.textarea`
     resize: none;
 `
 
-export  default function PostRetweetForm({status,docId}){
+export  default function PostRetweetCommentForm({status,docId}){
     const user= auth.currentUser;
     
     const [post,setPost]= useState<{
@@ -84,7 +84,7 @@ export  default function PostRetweetForm({status,docId}){
                     isLoading:true,
                 }
             })
-            if(confirm('you really comment?')){
+            if(confirm('you really re-comment?')){
                 const docs= await addDoc(collection(db,'comments'),{
                     tweet: post.tweet,
                     createdAt:  Date.now(),
@@ -92,8 +92,8 @@ export  default function PostRetweetForm({status,docId}){
                     userId :user.uid,
                     profileImg: user.photoURL,
                     like: [],
-                    tweetDocId :docId,
-                    parentCommentId:  null, 
+                    tweetDocId :null,
+                    parentCommentId: docId , 
                 })
                 
                 

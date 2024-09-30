@@ -93,7 +93,7 @@ const Inner2= styled.div`
     width: 100%;
    margin-top: 30px;
 `
-export default function ReplyModal({onClose,profileImg,userName,updatedDate,tweet,tweetDocId}){
+export default function ReplyModal2({onClose,profileImg,userName,updatedDate,tweet,parentCommentId}){
 
     const user= auth.currentUser;
     const  UserImg= user?.photoURL;
@@ -149,8 +149,8 @@ export default function ReplyModal({onClose,profileImg,userName,updatedDate,twee
                         userId :user.uid,
                         profileImg: user.photoURL,
                         like: [],
-                        tweetDocId :tweetDocId,
-                        parentCommentId:  null, 
+                        tweetDocId :null,
+                        parentCommentId:  parentCommentId, 
                     })
 
                     if(reply.file){
@@ -161,6 +161,7 @@ export default function ReplyModal({onClose,profileImg,userName,updatedDate,twee
                         doc,{photo:url});
                     }
                     onClose();
+
                 }
     
             }catch(error){

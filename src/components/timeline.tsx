@@ -22,6 +22,7 @@ export interface ITweets {
     profileImg?:string;
     like: [];
     tweetDocId?:string;
+    parentCommentId?:string;
 }
 
 export default function TimeLine(){
@@ -56,7 +57,7 @@ export default function TimeLine(){
             // 해당 컴포넌트가 마운트될때 구독되고 언마운트 될때 구독 취소
             unsubscribe= await onSnapshot(tweetsQuery, (snapshot) => {
                 const tweets = snapshot.docs.map(doc => {
-                    const { createdAt, photo, tweet, userId, userName, profileImg,like } = doc.data();
+                    const { createdAt, photo, tweet, userId, userName, profileImg,like} = doc.data();
                  
                     return {
                         docId: doc.id,
@@ -67,6 +68,7 @@ export default function TimeLine(){
                         userName,
                         profileImg,
                         like,
+               
                     };
                     
                 });

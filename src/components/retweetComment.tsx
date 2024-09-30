@@ -10,7 +10,7 @@ import styled from 'styled-components';
 import ReplyModal from "./modal/ReplyModal";
 import { createPortal } from "react-dom";
 import {  useNavigate } from "react-router-dom";
-import { IRetweets } from "./retweetPage";
+import ReplyModal2 from "./modal/ReplyModal2";
 
 const Avatar =styled.div`
 width: 40px;
@@ -29,7 +29,7 @@ const TextAndPhoto =styled.div`
 `
 
 
-export default function Retweet({userName,tweet,photo,createdAt,userId,docId,profileImg,like,tweetDocId}:ITweets){
+export default function RetweetComment({userName,tweet,photo,createdAt,userId,docId,profileImg,like}:ITweets){
     const user= auth.currentUser;
 
     
@@ -91,9 +91,9 @@ export default function Retweet({userName,tweet,photo,createdAt,userId,docId,pro
         async function handleDeleteBtn(){
             try{
                 if(confirm('you really delete this retweet?')){
-                    await deleteDoc(doc(db,"tweets",tweetDocId,'retweets',docId));
+                    await deleteDoc(doc(db,"comments",docId));
                     if(photo){
-                        const photoRef =ref(storage,`tweets/retweets/${userId}/${docId}`);
+                        const photoRef =ref(storage,`comments/${userId}/${docId}`);
                         await deleteObject(photoRef);   
                     }
              }
@@ -130,13 +130,13 @@ export default function Retweet({userName,tweet,photo,createdAt,userId,docId,pro
                             isLoading:true,
                         }
                     })  
-                    await updateDoc(doc(db, 'tweets', tweetDocId, 'retweets', docId),{tweet: edit.tweet});
+                    await updateDoc(doc(db, 'comments', docId),{tweet: edit.tweet});
 
                     if(edit.file){
-                        const locationRef= ref(storage,`tweets/retweets/${userId}/${docId}`);
+                        const locationRef= ref(storage,`comments/${userId}/${docId}`);
                        const uploadResult= await uploadBytes(locationRef,edit.file);
                       const url= await getDownloadURL(uploadResult.ref);
-                      await updateDoc(doc(db, 'tweets', `${tweetDocId}`, 'retweets', `${docId}`),{ photo:url});
+                      await updateDoc(doc(db, 'comments', `${docId}`),{ photo:url});
                     }
                 }
                
@@ -160,9 +160,9 @@ export default function Retweet({userName,tweet,photo,createdAt,userId,docId,pro
             if (user?.uid !== userId) return;
             try{
                 if(photo){
-                    const photoRef =ref(storage,`tweets/retweets/${userId}/${docId}`);
+                    const photoRef =ref(storage,`comments/${userId}/${docId}`);
                     await deleteObject(photoRef);
-                    await updateDoc(doc(db, 'tweets', `${tweetDocId}`, 'retweets', `${docId}`), {
+                    await updateDoc(doc(db, 'comments', `${docId}`), {
                         photo: deleteField(),
                       });
                 }
@@ -174,7 +174,7 @@ export default function Retweet({userName,tweet,photo,createdAt,userId,docId,pro
         }
        
         async function handleLikePlus(){
-           const docRef = doc(db, 'tweets', `${tweetDocId}`, 'retweets', `${docId}`)
+           const docRef = doc(db, 'comments', `${docId}`)
            
            if(user){
             await updateDoc(docRef,{ like: [...like,user.uid]});
@@ -183,7 +183,7 @@ export default function Retweet({userName,tweet,photo,createdAt,userId,docId,pro
           
         }
         async function handleLikeMinus(){
-            const docRef = doc(db, 'tweets', `${tweetDocId}`, 'retweets', `${docId}`)
+            const docRef = doc(db, 'comments', `${docId}`)
             if(user){
             await updateDoc(docRef,{ like: [...like].filter(item=>item!==user.uid)});
             setLikeClicked(prev=>!prev);
@@ -198,7 +198,7 @@ export default function Retweet({userName,tweet,photo,createdAt,userId,docId,pro
             setReplyClicked(false);
         }
         function handleGoRetweet(){
-            // navigate(`/retweet/${docId}`);
+            navigate(`/retweet/${docId}`);
         }
 
         return  <Wrapper >
@@ -333,7 +333,8 @@ export default function Retweet({userName,tweet,photo,createdAt,userId,docId,pro
            </Wrapper3>
            </>
         )}
-         {replyClicked && createPortal(<ReplyModal onClose={handleReplyClose} profileImg ={profileImg} userName={userName} updatedDate={updatedDate} tweet={tweet}></ReplyModal>,document.getElementById('modal'))}
+         {replyClicked && createPortal(<ReplyModal2 parentCommentId={docId} onClose={handleReplyClose} profileImg ={profileImg} userName={userName} updatedDate={updatedDate} tweet={tweet}></ReplyModal2>,document.getElementById('modal'))}
+
        
 
         </Wrapper>

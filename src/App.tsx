@@ -13,7 +13,7 @@ import ProtectedRoute from './components/ProtectedRoute'
 import ResetPassword from './components/resetPassword'
 import Begin from './routes/Begin'
 import Profile from './routes/Profile'
-import Retweet from './components/retweet'
+import TweetPage from './components/tweetPage'
 import RetweetPage from './components/retweetPage'
 
 
@@ -46,7 +46,11 @@ const router =createBrowserRouter([{
         element:<Profile/>,
       },
       {
-        path:`retweet/:tweetDocId`,
+        path:`tweet/:tweetDocId`,
+        element:<TweetPage/>,
+      },
+      {
+        path:`retweet/:retweetDocId`,
         element:<RetweetPage/>,
       }
   ]

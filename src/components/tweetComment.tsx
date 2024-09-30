@@ -1,14 +1,16 @@
 
 import { ITweets } from "./timeline";
 import { auth, db, storage } from "../routes/firebase";
-import { deleteDoc, deleteField, doc, updateDoc } from "firebase/firestore";
+import { collection, deleteDoc, deleteField, doc, updateDoc } from "firebase/firestore";
 import { deleteObject, getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { useEffect, useState } from "react";
-import {FileCondition, Wrapper, Column,Row,UserName,UploadedDate,Payload,Photo,Div,DeleteBtn,EditBtn,EditTextArea,EditTextLabel,EditTextInput,CancelBtn,UpdateBtn,InputItem,Wrapper2,DeleteImg, Wrapper3, ReplyContainer, Like, Reply, Bookmark, Share, NonLike} from "./styled-components/tweet-styled-components";
+import { Wrapper, Column,Row,UserName,UploadedDate,Payload,Photo,Div,DeleteBtn,EditBtn,EditTextArea,EditTextLabel,EditTextInput,CancelBtn,UpdateBtn,InputItem,Wrapper2,DeleteImg, Wrapper3, ReplyContainer, Like, Reply, Bookmark, Share, NonLike} from "./styled-components/tweet-styled-components";
+import { FileCondition } from "./styled-components/post-tweet-styled-components";
 import styled from 'styled-components';
 import ReplyModal from "./modal/ReplyModal";
 import { createPortal } from "react-dom";
 import {  useNavigate } from "react-router-dom";
+import ReplyModal2 from "./modal/ReplyModal2";
 
 const Avatar =styled.div`
 width: 40px;
@@ -25,15 +27,14 @@ height: 100%;
 const TextAndPhoto =styled.div`
    cursor: pointer; 
 `
-    
 
-export default function Tweet({userName,tweet,photo,createdAt,userId,docId,profileImg,like}:ITweets){
+
+export default function TweetComment({userName,tweet,photo,createdAt,userId,docId,profileImg,like}:ITweets){
     const user= auth.currentUser;
-    
+
     
     const [likeClicked,setLikeClicked]= useState(like.filter(item=>item===user?.uid).length===0 ? false: true);
     const [replyClicked,setReplyClicked] =useState(false);
-    const [retweetClicked,setRetweetClicked] =useState(false);
     const updatedDate = new Date(createdAt).toLocaleDateString('en-US', {
             year:'numeric',
             month:'short',
@@ -42,10 +43,11 @@ export default function Tweet({userName,tweet,photo,createdAt,userId,docId,profi
         })
 
     const navigate =useNavigate();
-     //  프로파일에서 아바타 이미지를 변경했을때 tweet에 나타나는 프로파일 이미지 업데이트
+    
+    //  프로파일에서 아바타 이미지를 변경했을때 tweet에 나타나는 프로파일 이미지 업데이트
     async function  updateUserInfo() {
         if (user?.uid === userId) {
-            const docRef = doc(db, "tweets", docId);
+            const docRef = doc(db, "comments", docId);
             await updateDoc(docRef,{ profileImg: profileImg, userName: user.displayName });
         }
     }
@@ -89,11 +91,11 @@ export default function Tweet({userName,tweet,photo,createdAt,userId,docId,profi
     
         async function handleDeleteBtn(){
             try{
-                if(confirm('you really delete this tweet?')){
-                    await deleteDoc(doc(db,"tweets",docId));
+                if(confirm('you really delete this retweet?')){
+                    await deleteDoc(doc(db,"comments",docId));
                     if(photo){
-                        const photoRef =ref(storage,`tweets/${userId}/${docId}`);
-                        await deleteObject(photoRef);
+                        const photoRef =ref(storage,`comments/${userId}/${docId}`);
+                        await deleteObject(photoRef);   
                     }
              }
             }
@@ -129,13 +131,13 @@ export default function Tweet({userName,tweet,photo,createdAt,userId,docId,profi
                             isLoading:true,
                         }
                     })  
-                    await updateDoc(doc(db,"tweets",docId),{tweet: edit.tweet});
+                    await updateDoc(doc(db, 'comments', docId),{tweet: edit.tweet});
 
                     if(edit.file){
-                        const locationRef= ref(storage,`tweets/${userId}/${docId}`);
+                        const locationRef= ref(storage,`comments/${userId}/${docId}`);
                        const uploadResult= await uploadBytes(locationRef,edit.file);
                       const url= await getDownloadURL(uploadResult.ref);
-                      await updateDoc(doc(db,"tweets",docId),{ photo:url});
+                      await updateDoc(doc(db, 'comments', `${docId}`),{ photo:url});
                     }
                 }
                
@@ -159,9 +161,9 @@ export default function Tweet({userName,tweet,photo,createdAt,userId,docId,profi
             if (user?.uid !== userId) return;
             try{
                 if(photo){
-                    const photoRef =ref(storage,`tweets/${userId}/${docId}`);
+                    const photoRef =ref(storage,`comments/${userId}/${docId}`);
                     await deleteObject(photoRef);
-                    await updateDoc(doc(db, 'tweets', docId), {
+                    await updateDoc(doc(db, 'comments', `${docId}`), {
                         photo: deleteField(),
                       });
                 }
@@ -173,7 +175,8 @@ export default function Tweet({userName,tweet,photo,createdAt,userId,docId,profi
         }
        
         async function handleLikePlus(){
-           const docRef = doc(db, "tweets", docId);
+           const docRef = doc(db, 'comments', `${docId}`)
+           
            if(user){
             await updateDoc(docRef,{ like: [...like,user.uid]});
             setLikeClicked(prev=>!prev);
@@ -181,7 +184,7 @@ export default function Tweet({userName,tweet,photo,createdAt,userId,docId,profi
           
         }
         async function handleLikeMinus(){
-            const docRef = doc(db, "tweets", docId);
+            const docRef = doc(db, 'comments', `${docId}`)
             if(user){
             await updateDoc(docRef,{ like: [...like].filter(item=>item!==user.uid)});
             setLikeClicked(prev=>!prev);
@@ -195,8 +198,8 @@ export default function Tweet({userName,tweet,photo,createdAt,userId,docId,profi
         function handleReplyClose(){
             setReplyClicked(false);
         }
-        function handleGoRetweet(){
-            navigate(`/tweet/${docId}`);
+        function handleGoRetweetComment(){
+            navigate(`/retweet/${docId}`);
         }
 
         return  <Wrapper >
@@ -239,7 +242,7 @@ export default function Tweet({userName,tweet,photo,createdAt,userId,docId,profi
         {/* 수정 x */}
         {!edit.isEdit ?  ( 
             <>
-            <TextAndPhoto onClick={handleGoRetweet}>
+            <TextAndPhoto onClick={handleGoRetweetComment}>
                 <Column>
                 <Payload>{tweet}</Payload> 
                 </Column>
@@ -331,7 +334,7 @@ export default function Tweet({userName,tweet,photo,createdAt,userId,docId,profi
            </Wrapper3>
            </>
         )}
-         {replyClicked && createPortal(<ReplyModal tweetDocId={docId} onClose={handleReplyClose} profileImg ={profileImg} userName={userName} updatedDate={updatedDate} tweet={tweet}></ReplyModal>,document.getElementById('modal'))}
+         {replyClicked && createPortal(<ReplyModal2 parentCommentId={docId} onClose={handleReplyClose} profileImg ={profileImg} userName={userName} updatedDate={updatedDate} tweet={tweet}></ReplyModal2>,document.getElementById('modal'))}
        
 
         </Wrapper>

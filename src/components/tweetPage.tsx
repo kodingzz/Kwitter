@@ -11,8 +11,6 @@ import PostRetweetForm from "./post-retweet-form";
 import Retweet from "./tweetComment";
 import { getPostWithComments } from "./firebaseService";
 import TweetComment from "./tweetComment";
-import PostRetweetCommentForm from "./post-retweet-comment-form";
-import RetweetComment from "./retweetComment";
 
 const Wrapper =styled.div`  
 display: flex;
@@ -30,14 +28,14 @@ const Reply = styled.div`
 `
 
 
-export default function RetweetPage(){ 
+export default function TweetPage(){ 
+    const user =auth.currentUser;
+
+
+    const { tweetDocId } = useParams(); // URL에서 파라미터 추출
     
-  
-    const { retweetDocId } = useParams(); // 누른 댓글의 docId
-    
-  const [retweet,setTweet] =useState<ITweets[]>([]);
+  const [tweet,setTweet] =useState<ITweets[]>([]);
   const [comment,setComment] =useState<ITweets[]>([]);
- 
   
   useEffect(()=>{
       let unsubscribe : Unsubscribe | null = null;
@@ -45,12 +43,12 @@ export default function RetweetPage(){
 
     
           async function fetchTweets(){
-              const retweetsQuery =query(collection(db ,'comments'), orderBy('createdAt',"desc"),limit(25));
-              const commentsQuery =query(collection(db ,'comments'), orderBy('createdAt',"desc"),limit(25), where('parentCommentId', '==', retweetDocId));
+              const tweetsQuery =query(collection(db ,'tweets'), orderBy('createdAt',"desc"),limit(25));
+              const commentsQuery =query(collection(db ,'comments'), where('tweetDocId', '==', tweetDocId), orderBy('createdAt',"desc"),limit(25));
 
       
-          unsubscribe= await onSnapshot(retweetsQuery, (snapshot) => {
-              const retweets = snapshot.docs.map(doc => {
+          unsubscribe= await onSnapshot(tweetsQuery, (snapshot) => {
+              const tweets = snapshot.docs.map(doc => {
                   const { createdAt, photo, tweet, userId, userName, profileImg,like,tweetDocId,parentCommentId } = doc.data();
                
                   return {
@@ -67,7 +65,7 @@ export default function RetweetPage(){
                   };
                   
               });
-              setTweet(retweets);
+              setTweet(tweets);
            
           });
 
@@ -103,16 +101,17 @@ export default function RetweetPage(){
 
           };
       
-  },[retweetDocId]); 
+  },[tweetDocId]); 
 
-  
+
+
   return <Wrapper>
-      {retweet.filter(retweet=>retweet.docId===retweetDocId).map(retweet=><TweetComment key={retweet.docId} {...retweet}></TweetComment>)}
+      {tweet.filter(tweet=>tweet.docId===tweetDocId).map(tweet=><Tweet key={tweet.docId} {...tweet}></Tweet>)}
       <Reply>
         <span>댓글 {comment.length}</span>
       </Reply>
-      <PostRetweetCommentForm docId={retweetDocId} status='Reply'></PostRetweetCommentForm>
-      {comment.map(comment=><RetweetComment key={comment.docId} {...comment}></RetweetComment>)}
+      <PostRetweetForm docId={tweetDocId} status='Reply'></PostRetweetForm>
+      {comment.map(comment=><TweetComment  key={comment.docId} {...comment}></TweetComment>)}
       </Wrapper>
      
 }

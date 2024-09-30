@@ -1,5 +1,7 @@
 import styled from "styled-components"
 
+export const FileCondition =styled.div`
+`
 
 export const Wrapper =styled.div`
    display: grid;
@@ -88,8 +90,6 @@ export const EditTextLabel =styled.label`
 `
 export const EditTextInput = styled.input`
     
-`
-export const FileCondition =styled.div`
 `
 
 export const CancelBtn = styled.button`
