@@ -8,7 +8,8 @@ height: 100vh;
 
 `
 const Div = styled.div`
-
+    font-size: 30px;
+    color: red;
 `
 const Logo= styled.img`
     width: 100px;
@@ -19,7 +20,7 @@ export default  function LoadingScreen(){
 
     return <Wrapper>
                 <Div>
-                     <Logo src="twitter.svg"/>
+                    is Loading...
                 </Div> 
         </Wrapper>
 }

@@ -4,7 +4,7 @@ import { auth, db, storage } from "../routes/firebase";
 import { collection, deleteDoc, deleteField, doc, updateDoc } from "firebase/firestore";
 import { deleteObject, getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { useEffect, useState } from "react";
-import { Wrapper, Column,Row,UserName,UploadedDate,Payload,Photo,Div,DeleteBtn,EditBtn,EditTextArea,EditTextLabel,EditTextInput,CancelBtn,UpdateBtn,InputItem,Wrapper2,DeleteImg, Wrapper3, ReplyContainer, Like, Reply, Bookmark, Share, NonLike} from "./styled-components/tweet-styled-components";
+import { Wrapper, Column,Row,UserName,UploadedDate,Payload,Photo,Div,DeleteBtn,EditBtn,EditTextArea,EditTextLabel,EditTextInput,CancelBtn,UpdateBtn,InputItem,Wrapper2,DeleteImg, Wrapper3, ReplyContainer, Like, Reply, Bookmark, Share, NonLike, NonBookmark} from "./styled-components/tweet-styled-components";
 import { FileCondition } from "./styled-components/post-tweet-styled-components";
 import styled from 'styled-components';
 import ReplyModal from "./modal/ReplyModal";
@@ -29,11 +29,13 @@ const TextAndPhoto =styled.div`
 `
 
 
-export default function RetweetComment({userName,tweet,photo,createdAt,userId,docId,profileImg,like}:ITweets){
+export default function RetweetComment({userName,tweet,photo,createdAt,userId,docId,profileImg,like,bookmark}:ITweets){
     const user= auth.currentUser;
 
     
     const [likeClicked,setLikeClicked]= useState(like.filter(item=>item===user?.uid).length===0 ? false: true);
+    const [bookmarkClicked,setBookmarkClicked]= useState(bookmark.filter(item=>item===user?.uid).length===0 ? false: true);
+
     const [replyClicked,setReplyClicked] =useState(false);
     const updatedDate = new Date(createdAt).toLocaleDateString('en-US', {
             year:'numeric',
@@ -189,6 +191,22 @@ export default function RetweetComment({userName,tweet,photo,createdAt,userId,do
             setLikeClicked(prev=>!prev);
          }
         }
+        async function handleBookmark(){
+            const docRef = doc(db, "comments", docId);
+            if(user){
+                await updateDoc(docRef,{ bookmark: [...bookmark,user.uid]});
+                setBookmarkClicked(prev=>!prev);
+               }
+              
+        }
+        async function handleBookmarkCancel(){
+            const docRef = doc(db, "comments", docId);
+            if(user){
+                await updateDoc(docRef,{ bookmark: [...bookmark].filter(item=>item!==user.uid)});
+                setBookmarkClicked(prev=>!prev);
+               }
+              
+        }
 
         function handleReplyClick(){
             setReplyClicked(true);
@@ -278,12 +296,20 @@ export default function RetweetComment({userName,tweet,photo,createdAt,userId,do
                         </svg>                     
 
                     </Reply>
-                    <Bookmark>
+                    {bookmarkClicked ? (
+                        <NonBookmark onClick={handleBookmarkCancel}>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
                         </svg>
 
+                        </NonBookmark>
+                    ):(
+                        <Bookmark onClick={handleBookmark}>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
+                        </svg>
                     </Bookmark>
+                    )}
                     <Share>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186Zm0-12.814a2.25 2.25 0 1 0 3.933-2.185 2.25 2.25 0 0 0-3.933 2.185Z" />

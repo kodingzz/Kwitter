@@ -85,6 +85,7 @@ const NameInput = styled.input`
 
 export default function Profile(){ 
     const user= auth.currentUser;
+    
     const [avatar,setAvatar] =useState(user?.photoURL); 
     const [tweet,setTweet]= useState<ITweets[]>([]);
     const [isEdit,setIsEdit]= useState(false);
@@ -137,7 +138,7 @@ export default function Profile(){
             unsubscribe = await onSnapshot(tweetQuery,snapshot=>{
                 const tweets= snapshot.docs.map(doc=>{
                   
-                    const {createdAt,photo, tweet,userId,userName,like} = doc.data();
+                    const {createdAt,photo, tweet,userId,userName,like,bookmark} = doc.data();
               
                     return {
                         createdAt,
@@ -148,7 +149,7 @@ export default function Profile(){
                         docId: doc.id,
                         profileImg:user?.photoURL,
                         like,
-                   
+                        bookmark
                     }
                 })
                 setTweet(tweets);

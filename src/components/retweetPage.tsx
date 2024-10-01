@@ -51,7 +51,7 @@ export default function RetweetPage(){
       
           unsubscribe= await onSnapshot(retweetsQuery, (snapshot) => {
               const retweets = snapshot.docs.map(doc => {
-                  const { createdAt, photo, tweet, userId, userName, profileImg,like,tweetDocId,parentCommentId } = doc.data();
+                  const { createdAt, photo, tweet, userId, userName, profileImg,like,tweetDocId,parentCommentId,bookmark} = doc.data();
                
                   return {
                       docId: doc.id,
@@ -63,7 +63,8 @@ export default function RetweetPage(){
                       profileImg,
                       like,
                       tweetDocId,
-                      parentCommentId
+                      parentCommentId,
+                      bookmark,
                   };
                   
               });
@@ -74,7 +75,7 @@ export default function RetweetPage(){
 
           unsubscribe2= await onSnapshot(commentsQuery, (snapshot) => {
             const comments = snapshot.docs.map(doc => {
-                const { createdAt, photo, tweet, userId, userName, profileImg,like,tweetDocId,parentCommentId } = doc.data();
+                const { createdAt, photo, tweet, userId, userName, profileImg,like,tweetDocId,parentCommentId,bookmark } = doc.data();
              
                 return {
                     docId: doc.id,
@@ -87,6 +88,7 @@ export default function RetweetPage(){
                     like,
                     tweetDocId,
                     parentCommentId,
+                    bookmark,
                 };
                 
             });

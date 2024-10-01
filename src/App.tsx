@@ -15,6 +15,7 @@ import Begin from './routes/Begin'
 import Profile from './routes/Profile'
 import TweetPage from './components/tweetPage'
 import RetweetPage from './components/retweetPage'
+import Bookmark from './routes/Bookmark'
 
 
 const GlobalStyles = createGlobalStyle` 
@@ -44,6 +45,10 @@ const router =createBrowserRouter([{
       {
         path:"profile",
         element:<Profile/>,
+      },
+      {
+        path:"bookmark",
+        element:<Bookmark/>,
       },
       {
         path:`tweet/:tweetDocId`,

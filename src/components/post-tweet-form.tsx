@@ -77,6 +77,8 @@ export  default function PostTweetForm({status}){
                     userId :user.uid,
                     profileImg: user.photoURL,
                     like: [],
+                    bookmark: [],
+
                 })
                 
                 

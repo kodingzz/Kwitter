@@ -94,6 +94,7 @@ export  default function PostRetweetForm({status,docId}){
                     like: [],
                     tweetDocId :docId,
                     parentCommentId:  null, 
+                    bookmark:[],
                 })
                 
                 

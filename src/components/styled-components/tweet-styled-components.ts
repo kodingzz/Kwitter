@@ -208,17 +208,61 @@ align-items: center;
 gap: 5px;
 color : #F91880;
 
+svg{
+    fill:#F91880;
+}
+
 `
+
+export const Bookmark =styled.div`
+width: 35px;
+height: 35px;
+cursor: pointer;
+display: flex;
+justify-content: center;
+align-items: center;
+gap: 5px;
+
+svg{
+    width: 20px;
+    height:20px ;
+}
+
+&:hover{
+    color: #1D9BF0;
+    transition:  0.2s all ease-in-out;
+}
+`
+export const NonBookmark =styled.div`
+width: 35px;
+height: 35px;
+cursor: pointer;
+display: flex;
+justify-content: center;
+align-items: center;
+gap: 5px;
+color : #1D9BF0;
+
+svg{
+    width: 20px;
+    height: 20px;
+    fill: #1D9BF0;
+}
+
+`
+
 export const Reply =styled.div`
 width: 20px;
 height: 20px;
 cursor: pointer;
+
+&:hover{
+    transition: 0.2s color ease-in-out;
+   color: #1D9BF0;
+
+}
 `
-export const Bookmark =styled.div`
-width: 20px;
-height: 20px;
-cursor: pointer;
-`
+
 export const Share =styled.div`
 width: 20px;
 height: 20px;

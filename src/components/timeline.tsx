@@ -21,14 +21,17 @@ export interface ITweets {
     userName:string;
     profileImg?:string;
     like: [];
+    bookmark:[];
     tweetDocId?:string;
     parentCommentId?:string;
+  
 }
 
 export default function TimeLine(){
     // tweet의 타입은 ITweets interface 형태를 가진다
     const [tweet,setTweet] =useState<ITweets[]>([]);
     // const user= auth.currentUser;
+    
     
     useEffect(()=>{
         let unsubscribe : Unsubscribe | null = null;
@@ -57,7 +60,7 @@ export default function TimeLine(){
             // 해당 컴포넌트가 마운트될때 구독되고 언마운트 될때 구독 취소
             unsubscribe= await onSnapshot(tweetsQuery, (snapshot) => {
                 const tweets = snapshot.docs.map(doc => {
-                    const { createdAt, photo, tweet, userId, userName, profileImg,like} = doc.data();
+                    const { createdAt, photo, tweet, userId, userName, profileImg,like,bookmark} = doc.data();
                  
                     return {
                         docId: doc.id,
@@ -68,7 +71,7 @@ export default function TimeLine(){
                         userName,
                         profileImg,
                         like,
-               
+                        bookmark,
                     };
                     
                 });
