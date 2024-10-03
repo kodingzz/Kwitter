@@ -137,10 +137,10 @@ export default function Profile(){
             // const snapshot = await  getDocs(tweetQuery);
             unsubscribe = await onSnapshot(tweetQuery,snapshot=>{
                 const tweets= snapshot.docs.map(doc=>{
-                  
                     
-                    const {createdAt,photo, tweet,userId,userName,like,bookmark,tweetDocId,parentCommentId,profileImg=user?.photoURL} = doc.data();
-              
+                    
+                    const {createdAt,photo, tweet,userId,userName,like,bookmark,tweetDocId,parentCommentId} = doc.data();
+                    
                     return {
                         createdAt,
                         photo,
@@ -148,13 +148,14 @@ export default function Profile(){
                         userId,
                         userName,
                         docId: doc.id,
-                        profileImg,
+                        profileImg : user?.photoURL,
                         like,
                         bookmark,
                         tweetDocId,
                         parentCommentId
                     }
                 })
+                
                 setTweet(tweets);
             })
         }

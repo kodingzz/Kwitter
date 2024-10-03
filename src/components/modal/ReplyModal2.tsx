@@ -93,7 +93,7 @@ const Inner2= styled.div`
     width: 100%;
    margin-top: 30px;
 `
-export default function ReplyModal2(props:{parentCommentId:string, onClose: () => void, profileImg :string|undefined, userName:string, updatedDate:string, tweet:string}){
+export default function ReplyModal2(props:{parentCommentId:string, onClose: () => void, profileImg :string|undefined|null, userName:string, updatedDate:string, tweet:string}){
 
     const user= auth.currentUser;
     const  UserImg= user?.photoURL;

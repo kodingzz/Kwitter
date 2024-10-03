@@ -94,7 +94,7 @@ const Inner2= styled.div`
    margin-top: 30px;
 `
 
-export default function ReplyModal(props:{tweetDocId:string, onClose: () => void, profileImg :string|undefined, userName:string, updatedDate:string, tweet:string}){
+export default function ReplyModal(props:{tweetDocId:string, onClose: () => void, profileImg :string|undefined|null, userName:string, updatedDate:string, tweet:string}){
 
     
     const user= auth.currentUser;

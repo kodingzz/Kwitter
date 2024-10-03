@@ -19,7 +19,7 @@ export interface ITweets {
     tweet:string;
     userId:string;
     userName:string;
-    profileImg?:string;
+    profileImg?:string | null | undefined;
     like: [];
     bookmark:[];
     tweetDocId?:string;
