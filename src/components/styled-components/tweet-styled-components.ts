@@ -193,6 +193,10 @@ justify-content: center;
 align-items: center;
 gap: 5px;
 
+svg{
+    width: 20px;
+    height:20px ;
+}
 &:hover{
     color: #F91880;
     transition:  0.2s all ease-in-out;
@@ -209,6 +213,8 @@ gap: 5px;
 color : #F91880;
 
 svg{
+    width: 20px;
+    height:20px ;
     fill:#F91880;
 }
 
@@ -252,9 +258,17 @@ svg{
 `
 
 export const Reply =styled.div`
-width: 20px;
-height: 20px;
+width: 35px;
+height: 35px;
 cursor: pointer;
+display: flex;
+justify-content: center;
+align-items: center;
+gap: 5px;
+svg{
+    width: 20px;
+    height:20px ;
+}
 
 &:hover{
     transition: 0.2s color ease-in-out;

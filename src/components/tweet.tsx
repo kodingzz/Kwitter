@@ -1,7 +1,7 @@
 
 import { ITweets } from "./timeline";
 import { auth, db, storage } from "../routes/firebase";
-import { deleteDoc, deleteField, doc, updateDoc } from "firebase/firestore";
+import { collection, deleteDoc, deleteField, doc, getDocs, orderBy, query, updateDoc, where } from "firebase/firestore";
 import { deleteObject, getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { useEffect, useState } from "react";
 import {FileCondition, Wrapper, Column,Row,UserName,UploadedDate,Payload,Photo,Div,DeleteBtn,EditBtn,EditTextArea,EditTextLabel,EditTextInput,CancelBtn,UpdateBtn,InputItem,Wrapper2,DeleteImg, Wrapper3, ReplyContainer, Like, Reply, Bookmark, Share, NonLike,NonBookmark} from "./styled-components/tweet-styled-components";
@@ -30,7 +30,7 @@ const TextAndPhoto =styled.div`
 export default function Tweet({userName,tweet,photo,createdAt,userId,docId,profileImg,like,bookmark}:ITweets){
     const user= auth.currentUser;
     
-    
+    const [commentsLength,setCommentsLength] = useState(0);
     const [likeClicked,setLikeClicked]= useState(like.filter(item=>item===user?.uid).length===0 ? false: true);
     const [bookmarkClicked,setBookmarkClicked]= useState(bookmark.filter(item=>item===user?.uid).length===0 ? false: true);
 
@@ -44,6 +44,13 @@ export default function Tweet({userName,tweet,photo,createdAt,userId,docId,profi
         })
 
     const navigate =useNavigate();
+    
+
+    async function fetchComments(){
+        const commentsQuery =query(collection(db ,'comments'), where('tweetDocId', '==', docId), orderBy('createdAt',"desc"));
+        const snapshotLength=(await getDocs(commentsQuery)).docs.length;
+        setCommentsLength(snapshotLength);
+    }
      //  프로파일에서 아바타 이미지를 변경했을때 tweet에 나타나는 프로파일 이미지 업데이트
     async function  updateUserInfo() {
         if (user?.uid === userId) {
@@ -51,7 +58,11 @@ export default function Tweet({userName,tweet,photo,createdAt,userId,docId,profi
             await updateDoc(docRef,{ profileImg: profileImg, userName: user.displayName });
         }
     }
-    useEffect(()=>{updateUserInfo()},[]);   
+    useEffect(()=>{
+        updateUserInfo()
+        fetchComments();
+    
+    },[]);   
    
 
     const [edit,setEdit]= useState<{
@@ -275,14 +286,14 @@ export default function Tweet({userName,tweet,photo,createdAt,userId,docId,profi
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
                         </svg>
-                        <span>{like.length}</span>
+                        <span>{like.length!==0 && like.length}</span>
                     </NonLike>
                 ):(
                     <Like onClick={handleLikePlus}>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
                         </svg>
-                        <span>{like.length}</span>   
+                        <span>{like.length!==0 && like.length}</span>   
                     </Like>
                 )}
                     
@@ -290,7 +301,7 @@ export default function Tweet({userName,tweet,photo,createdAt,userId,docId,profi
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 0 1-.923 1.785A5.969 5.969 0 0 0 6 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337Z" />
                         </svg>                     
-
+                        <span>{commentsLength!==0 && commentsLength}</span>
                     </Reply>
 
                     {bookmarkClicked ? (

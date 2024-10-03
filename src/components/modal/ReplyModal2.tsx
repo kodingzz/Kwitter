@@ -146,11 +146,13 @@ export default function ReplyModal2({onClose,profileImg,userName,updatedDate,twe
                         tweet: reply.tweet,
                         createdAt:  Date.now(),
                         userName :  user.displayName || 'Anonymous',
-                        userId :user.uid,
+                        userId :user.uid,   
                         profileImg: user.photoURL,
                         like: [],
                         tweetDocId :null,
                         parentCommentId:  parentCommentId, 
+                        bookmark:[],
+
                     })
 
                     if(reply.file){

@@ -21,7 +21,10 @@ margin-top: 20px;
     align-items: center;
     gap:10px;
 `
-
+const Header = styled.h2`
+    font-size:25px;
+    font-weight: bold;
+`
 
 export default function Bookmark(){
 
@@ -97,13 +100,12 @@ export default function Bookmark(){
     },[]);
 
     return <Wrapper>
-            <h2>Bookmark</h2>
+            <Header>Bookmarks</Header>
             <Tweets>
                 {tweet.map(item=><Tweet key={item.docId} {...item}></Tweet>)}
-            </Tweets>
-            <Tweets>
                 {retweet.map(item=><TweetComment key={item.docId} {...item}></TweetComment>)}
-            </Tweets>      
+
+            </Tweets>
          </Wrapper>
    
 }

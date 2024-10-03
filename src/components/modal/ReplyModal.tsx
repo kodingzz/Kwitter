@@ -151,6 +151,7 @@ export default function ReplyModal({onClose,profileImg,userName,updatedDate,twee
                         like: [],
                         tweetDocId :tweetDocId,
                         parentCommentId:  null, 
+                        bookmark:[],
                     })
 
                     if(reply.file){
