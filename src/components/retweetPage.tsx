@@ -3,13 +3,9 @@
 import { useEffect, useState } from "react"
 import styled from "styled-components"
 import  { ITweets } from "../components/timeline";
-import { collection, limit, onSnapshot, orderBy, query, Unsubscribe, updateDoc, where } from "firebase/firestore";
-import Tweet from "../components/tweet";
-import { auth, db, storage } from "../routes/firebase";
+import { collection, limit, onSnapshot, orderBy, query, Unsubscribe,  where } from "firebase/firestore";
+import {  db} from "../routes/firebase";
 import { useParams } from "react-router-dom";
-import PostRetweetForm from "./post-retweet-form";
-import Retweet from "./tweetComment";
-import { getPostWithComments } from "./firebaseService";
 import TweetComment from "./tweetComment";
 import PostRetweetCommentForm from "./post-retweet-comment-form";
 import RetweetComment from "./retweetComment";
@@ -113,7 +109,7 @@ export default function RetweetPage(){
       <Reply>
         <span>댓글 {comment.length}</span>
       </Reply>
-      <PostRetweetCommentForm docId={retweetDocId} status='Reply'></PostRetweetCommentForm>
+      <PostRetweetCommentForm docId={retweetDocId} ></PostRetweetCommentForm>
       {comment.map(comment=><RetweetComment key={comment.docId} {...comment}></RetweetComment>)}
       </Wrapper>
      

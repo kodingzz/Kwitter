@@ -29,13 +29,13 @@ const TextAndPhoto =styled.div`
 
 export default function Tweet({userName,tweet,photo,createdAt,userId,docId,profileImg,like,bookmark}:ITweets){
     const user= auth.currentUser;
+    const modal = document.getElementById('modal');
     
     const [commentsLength,setCommentsLength] = useState(0);
     const [likeClicked,setLikeClicked]= useState(like.filter(item=>item===user?.uid).length===0 ? false: true);
     const [bookmarkClicked,setBookmarkClicked]= useState(bookmark.filter(item=>item===user?.uid).length===0 ? false: true);
 
     const [replyClicked,setReplyClicked] =useState(false);
-    const [retweetClicked,setRetweetClicked] =useState(false);
     const updatedDate = new Date(createdAt).toLocaleDateString('en-US', {
             year:'numeric',
             month:'short',
@@ -368,7 +368,7 @@ export default function Tweet({userName,tweet,photo,createdAt,userId,docId,profi
            </Wrapper3>
            </>
         )}
-         {replyClicked && createPortal(<ReplyModal tweetDocId={docId} onClose={handleReplyClose} profileImg ={profileImg} userName={userName} updatedDate={updatedDate} tweet={tweet}></ReplyModal>,document.getElementById('modal'))}
+         {replyClicked&& modal && createPortal(<ReplyModal tweetDocId={docId} onClose={handleReplyClose} profileImg ={profileImg} userName={userName} updatedDate={updatedDate} tweet={tweet}></ReplyModal>,modal)}
        
 
         </Wrapper>

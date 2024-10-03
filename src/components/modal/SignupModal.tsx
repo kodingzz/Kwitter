@@ -77,9 +77,21 @@ font-weight:600;
 `
 
 
+interface State {
+    name: string;
+    email : string;
+    password : string;
+    isLoading: boolean;
+    error: string,
+  }
+  
+  // 액션 타입 정의
+  interface Action {
+    type: string;
+    value: string |boolean;
+  }
 
-
-function userReducer(state: any,action: { type: string; value: any }){
+function Reducer(state: any,action: Action){
     if(action.type==='ERROR'){
         return {
             ...state,
@@ -120,17 +132,19 @@ function userReducer(state: any,action: { type: string; value: any }){
         }
     }
 }
-
-export default function SignupModal({onClose}){
-    const [user,userDispatch]= useReducer(userReducer,{
+interface ModalProps {
+    onClose: () => void;   // 모달을 닫는 함수
+  }
+export default function SignupModal({onClose}:ModalProps){
+    const initialState: State = {
         name: '',
         email : '',
         password : '',
         isLoading: false,
         error: '',
-    });
+    };
+    const [user,userDispatch]= useReducer(Reducer,initialState);
     
-
     const navigate= useNavigate();
 
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>){
@@ -185,8 +199,6 @@ export default function SignupModal({onClose}){
                     <Input name="button" type='submit' value={user.isLoading ? 'Loading...' : 'Sign Up'}/>
                 </Form>
                 {user.error!=='' && <Error>{user.error}</Error> }
-                {/* <GithubButton></GithubButton>
-                <GoogleButton></GoogleButton> */}
 
 
             </Wrapper2>

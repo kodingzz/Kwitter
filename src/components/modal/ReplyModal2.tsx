@@ -93,7 +93,7 @@ const Inner2= styled.div`
     width: 100%;
    margin-top: 30px;
 `
-export default function ReplyModal2({onClose,profileImg,userName,updatedDate,tweet,parentCommentId}){
+export default function ReplyModal2(props:{parentCommentId:string, onClose: () => void, profileImg :string|undefined, userName:string, updatedDate:string, tweet:string}){
 
     const user= auth.currentUser;
     const  UserImg= user?.photoURL;
@@ -150,7 +150,7 @@ export default function ReplyModal2({onClose,profileImg,userName,updatedDate,twe
                         profileImg: user.photoURL,
                         like: [],
                         tweetDocId :null,
-                        parentCommentId:  parentCommentId, 
+                        parentCommentId:  props.parentCommentId, 
                         bookmark:[],
 
                     })
@@ -162,7 +162,7 @@ export default function ReplyModal2({onClose,profileImg,userName,updatedDate,twe
                       await updateDoc(
                         doc,{photo:url});
                     }
-                    onClose();
+                    props.onClose();
 
                 }
     
@@ -185,13 +185,13 @@ export default function ReplyModal2({onClose,profileImg,userName,updatedDate,twe
             <Wrapper2>
              
                 <Outter>
-                    <button onClick={()=>onClose()}>X</button>
+                    <button onClick={()=>props.onClose()}>X</button>
                 </Outter>
 
                 <Inner1>
                     <Avatar> 
-                                {profileImg
-                                ? <AvatarImg src={profileImg}/>
+                                {props.profileImg
+                                ? <AvatarImg src={props.profileImg}/>
                                 :(
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6">
                                     <path fillRule="evenodd" d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z" clipRule="evenodd" />
@@ -201,11 +201,11 @@ export default function ReplyModal2({onClose,profileImg,userName,updatedDate,twe
                      </Avatar>
                      <Poster>
                         <PosterInfo>
-                            <UserName>{userName}</UserName>
-                            <UploadedDate>{updatedDate}</UploadedDate>
+                            <UserName>{props.userName}</UserName>
+                            <UploadedDate>{props.updatedDate}</UploadedDate>
                         </PosterInfo>
                         <PosterText>
-                            <Payload>{tweet}</Payload> 
+                            <Payload>{props.tweet}</Payload> 
                         </PosterText>
                      </Poster>
                        

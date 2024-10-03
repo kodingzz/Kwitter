@@ -11,10 +11,10 @@ const Div = styled.div`
     font-size: 30px;
     color: red;
 `
-const Logo= styled.img`
-    width: 100px;
-    height: 100px;
-`
+// const Logo= styled.img`
+//     width: 100px;
+//     height: 100px;
+// `
 
 export default  function LoadingScreen(){
 

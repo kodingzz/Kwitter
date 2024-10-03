@@ -4,7 +4,7 @@ import { auth, db, storage } from "./firebase"
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { updateProfile } from "firebase/auth";
 import  { ITweets } from "../components/timeline";
-import { collection, getDocs, limit, onSnapshot, orderBy, query, Unsubscribe, updateDoc, where } from "firebase/firestore";
+import { collection, limit, onSnapshot, orderBy, query, Unsubscribe,  where } from "firebase/firestore";
 import Tweet from "../components/tweet";
 
 
@@ -138,7 +138,8 @@ export default function Profile(){
             unsubscribe = await onSnapshot(tweetQuery,snapshot=>{
                 const tweets= snapshot.docs.map(doc=>{
                   
-                    const {createdAt,photo, tweet,userId,userName,like,bookmark} = doc.data();
+                    
+                    const {createdAt,photo, tweet,userId,userName,like,bookmark,tweetDocId,parentCommentId,profileImg=user?.photoURL} = doc.data();
               
                     return {
                         createdAt,
@@ -147,9 +148,11 @@ export default function Profile(){
                         userId,
                         userName,
                         docId: doc.id,
-                        profileImg:user?.photoURL,
+                        profileImg,
                         like,
-                        bookmark
+                        bookmark,
+                        tweetDocId,
+                        parentCommentId
                     }
                 })
                 setTweet(tweets);

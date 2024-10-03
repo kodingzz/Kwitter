@@ -1,5 +1,5 @@
 
-import { addDoc, collection, doc, updateDoc } from "firebase/firestore"; 
+import { addDoc, collection, updateDoc } from "firebase/firestore"; 
 import { useState } from 'react';
 import { auth,db, storage} from '../routes/firebase';
 import { Form,Wrapper,FileCondition,TextInputLabel,InputItem ,TextInput,SubmitBtn  } from "./styled-components/post-tweet-styled-components";
@@ -36,7 +36,10 @@ const TextArea= styled.textarea`
     resize: none;
 `
 
-export  default function PostRetweetForm({status,docId}){
+interface PostRetweetFormProps {
+    docId: string | undefined;  
+}
+export  default function PostRetweetForm({docId}:PostRetweetFormProps){
     const user= auth.currentUser;
     
     const [post,setPost]= useState<{
@@ -150,7 +153,7 @@ export  default function PostRetweetForm({status,docId}){
                     </TextInputLabel>
                     <TextInput hidden id='file' type='file' accept='image/*' onChange={handleFileChange}/>
 
-                    <SubmitBtn type='submit' value={post.isLoading ?`${status}ing...` :`${status}`}/>
+                    <SubmitBtn type='submit' value={post.isLoading ?`Replying...` :`Reply`}/>
                 </Wrapper>
             
             </Form>

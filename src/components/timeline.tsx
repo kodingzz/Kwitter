@@ -1,7 +1,7 @@
-import { collection, doc, limit, onSnapshot, orderBy, query, Unsubscribe, updateDoc } from "firebase/firestore";
+import { collection, limit, onSnapshot, orderBy, query, Unsubscribe } from "firebase/firestore";
 import { useEffect, useState } from "react"
 import styled from "styled-components"
-import { auth, db } from "../routes/firebase";
+import {  db } from "../routes/firebase";
 import Tweet from "./tweet";
 
 const Wrapper =styled.div`

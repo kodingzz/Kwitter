@@ -7,7 +7,6 @@ import { useEffect, useState } from "react";
 import { Wrapper, Column,Row,UserName,UploadedDate,Payload,Photo,Div,DeleteBtn,EditBtn,EditTextArea,EditTextLabel,EditTextInput,CancelBtn,UpdateBtn,InputItem,Wrapper2,DeleteImg, Wrapper3, ReplyContainer, Like, Reply, Bookmark, Share, NonLike, NonBookmark} from "./styled-components/tweet-styled-components";
 import { FileCondition } from "./styled-components/post-tweet-styled-components";
 import styled from 'styled-components';
-import ReplyModal from "./modal/ReplyModal";
 import { createPortal } from "react-dom";
 import {  useNavigate } from "react-router-dom";
 import ReplyModal2 from "./modal/ReplyModal2";
@@ -32,6 +31,7 @@ const TextAndPhoto =styled.div`
 export default function TweetComment({userName,tweet,photo,createdAt,userId,docId,profileImg,like,bookmark}:ITweets){
     const user= auth.currentUser;
 
+    const modal = document.getElementById('modal');
     
     const [likeClicked,setLikeClicked]= useState(like.filter(item=>item===user?.uid).length===0 ? false: true);
     const [bookmarkClicked,setBookmarkClicked]= useState(bookmark.filter(item=>item===user?.uid).length===0 ? false: true);
@@ -371,7 +371,7 @@ export default function TweetComment({userName,tweet,photo,createdAt,userId,docI
            </Wrapper3>
            </>
         )}
-         {replyClicked && createPortal(<ReplyModal2 parentCommentId={docId} onClose={handleReplyClose} profileImg ={profileImg} userName={userName} updatedDate={updatedDate} tweet={tweet}></ReplyModal2>,document.getElementById('modal'))}
+         {(replyClicked && modal) && createPortal(<ReplyModal2 parentCommentId={docId} onClose={handleReplyClose} profileImg ={profileImg} userName={userName} updatedDate={updatedDate} tweet={tweet}></ReplyModal2>,modal)}
        
 
         </Wrapper>

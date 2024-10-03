@@ -3,13 +3,11 @@
 import { useEffect, useState } from "react"
 import styled from "styled-components"
 import  { ITweets } from "../components/timeline";
-import { collection, limit, onSnapshot, orderBy, query, Unsubscribe, updateDoc, where } from "firebase/firestore";
+import { collection, limit, onSnapshot, orderBy, query, Unsubscribe, where } from "firebase/firestore";
 import Tweet from "../components/tweet";
-import { auth, db, storage } from "../routes/firebase";
+import {  db } from "../routes/firebase";
 import { useParams } from "react-router-dom";
 import PostRetweetForm from "./post-retweet-form";
-import Retweet from "./tweetComment";
-import { getPostWithComments } from "./firebaseService";
 import TweetComment from "./tweetComment";
 
 const Wrapper =styled.div`  
@@ -29,7 +27,6 @@ const Reply = styled.div`
 
 
 export default function TweetPage(){ 
-    const user =auth.currentUser;
 
 
     const { tweetDocId } = useParams(); // URL에서 파라미터 추출
@@ -112,7 +109,7 @@ export default function TweetPage(){
       <Reply>
         <span>댓글 {comment.length}</span>
       </Reply>
-      <PostRetweetForm docId={tweetDocId} status='Reply'></PostRetweetForm>
+      <PostRetweetForm docId={tweetDocId} ></PostRetweetForm>
       {comment.map(comment=><TweetComment  key={comment.docId} {...comment}></TweetComment>)}
       </Wrapper>
      

@@ -1,5 +1,5 @@
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth'
-import { useReducer, useState } from 'react'
+import { useReducer} from 'react'
 import { auth } from './firebase'
 import { Link, useNavigate } from 'react-router-dom'
 import { FirebaseError } from 'firebase/app'
@@ -7,8 +7,15 @@ import { Title,Wrapper,Form, Input,Switcher,Error } from '../components/styled-c
 import GithubButton from '../components/github-mark'
 import GoogleButton from '../components/google-mark'
 
+// interface ReducerState{
+//     name: string;
+//     email : string;
+//     password : string;
+//     isLoading: boolean;
+//     error: string;
+// }
 
-function userReducer(state: any,action: { type: string; value: any }){
+function Reducer(state: any,action: { type: string; value:string | boolean }){
     if(action.type==='ERROR'){
         return {
             ...state,
@@ -51,7 +58,7 @@ function userReducer(state: any,action: { type: string; value: any }){
 }
 
 export default function Signup(){
-    const [user,userDispatch]= useReducer(userReducer,{
+    const [user,userDispatch]= useReducer(Reducer,{
         name: '',
         email : '',
         password : '',

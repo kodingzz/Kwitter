@@ -22,7 +22,7 @@ width: 100%;
 height: 100%;
 `
 
-export  default function PostTweetForm({status}){
+export  default function PostTweetForm(){
     const user= auth.currentUser;
     const [post,setPost]= useState<{
     isLoading: boolean,
@@ -134,7 +134,7 @@ export  default function PostTweetForm({status}){
                     </TextInputLabel>
                     <TextInput hidden id='file' type='file' accept='image/*' onChange={handleFileChange}/>
 
-                    <SubmitBtn type='submit' value={post.isLoading ?`${status}ing...` :`${status}`}/>
+                    <SubmitBtn type='submit' value={post.isLoading ?`Posting...` :`Post`}/>
                 </Wrapper>
             
             </Form>

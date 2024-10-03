@@ -149,6 +149,7 @@ export default function Begin(){
     const [isSignupModalOpen,setSignupModalOpen]= useState(false);
     const [isLoginModalOpen,setLoginModalOpen]= useState(false);
 
+    const modal = document.getElementById('modal');
     function handleOpenSignupModal(){
         setSignupModalOpen(true);
     }
@@ -180,9 +181,9 @@ export default function Begin(){
                     <Line></Line>
                 </Or>
                 <SignupBtn onClick={handleOpenSignupModal}>계정 만들기</SignupBtn>
-                {isSignupModalOpen &&createPortal(<SignupModal onClose={handleCloseSignupModal}></SignupModal>,document.getElementById('modal')) }
+                {modal && isSignupModalOpen &&createPortal(<SignupModal onClose={handleCloseSignupModal}></SignupModal>,modal) }
                 <LoginBtn onClick={handleOpenLoginModal}>로그인</LoginBtn>
-                {isLoginModalOpen &&createPortal(<LoginModal onClose={handleCloseLoginModal}></LoginModal>, document.getElementById('modal'))}
+                {modal && isLoginModalOpen &&createPortal(<LoginModal onClose={handleCloseLoginModal}></LoginModal>, modal)}
             </Wrapper2>
            
 

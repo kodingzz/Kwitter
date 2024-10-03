@@ -12,7 +12,7 @@ const Wrapper= styled.div`
 
 export default function Home(){
    return <Wrapper>
-        <PostTweetForm status='Post'></PostTweetForm>
+        <PostTweetForm></PostTweetForm>
         <TimeLine></TimeLine>
     </Wrapper>
   

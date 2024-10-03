@@ -92,9 +92,11 @@ gap: 15px;
     color:#3675AE;
 }
 `
+interface ModalProps {
+  onClose: () => void;   // 모달을 닫는 함수
+}
 
-
-export default function LoginModal({onClose}){
+export default function LoginModal({onClose}:ModalProps){
 
     const navigate= useNavigate();
     const [user,setUser]= useState({
